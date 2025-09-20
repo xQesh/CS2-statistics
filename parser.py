@@ -28,15 +28,34 @@ def parseDemo():
 
     stats = stats.reset_index().rename(columns={"index": "Player"})
 
-    data = stats.to_json(orient = 'records', indent = 2)
+    ticks = dem.ticks.to_pandas()
+    player_to_team = ticks.groupby("name")["side"].first().to_dict()
+
+    stats["Team"] = stats["Player"].map(player_to_team)
+
+    data = {}
+
+    for _, row in stats.iterrows():
+        team = row["Team"]
+        player = row["Player"]
+        data.setdefault(team, {})[player] = {
+            "Kills": int(row["Kills"]),
+            "Deaths": int(row["Deaths"]),
+            "Assists": int(row["Assists"]),
+            "KD": float(row["KD"])
+        }
+
+    data_json = json.dumps(data, indent=2)
 
     file = f'./data/{demo[0]}'
 
     try:
         with open(file, 'x') as f:
-            f.write(data)
+            f.write(data_json)
 
     except:
         print("Ten plik został już utworzony wcześniej")
+
+
 
 parseDemo()

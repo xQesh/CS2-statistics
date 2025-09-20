@@ -48,3 +48,11 @@ stats = pd.DataFrame({
 
 stats["K/D"] = (stats["Kills"] / stats["Deaths"].replace(0, 1)).round(2) # unikamy dzielenia przez 0
 print(stats)
+
+pd.set_option('display.max_rows', None)
+pd.set_option('display.max_columns', None)
+pd.set_option('display.width', None)
+pd.set_option('display.max_colwidth', None)
+
+
+print(dem.rounds.to_pandas())
